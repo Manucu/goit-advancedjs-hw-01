@@ -1,59 +1,71 @@
-const FORM_FEEDBACK_KEY = 'feedback-form-state';
+import "../css/style.css";
+import javascriptLogo from "../img/javascript.svg";
+import viteLogo from "/vite.svg";
 
-const formData = {
-  email: '',
-  message: '',
+document.querySelector("#app").innerHTML = `
+  <div>
+    <a href="https://vite.dev" target="_blank">
+      <img src="${viteLogo}" class="logo" alt="Vite logo" />
+    </a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
+      <img src="${javascriptLogo}" class="logo vanilla" alt="JavaScript logo" />
+    </a>
+    <h1>Task 2: Feedback Form</h1>
+    <div id="form-app">
+      <form class="feedback-form" autocomplete="off">
+        <label>
+          Email
+          <input type="email" name="email" autofocus />
+        </label>
+        <label>
+          Message
+          <textarea name="message" rows="8"></textarea>
+        </label>
+        <button type="submit">Submit</button>
+      </form>
+      <button class="back-button" onclick="location.href='index.html'">Back</button>
+    </div>
+  </div>
+`;
+
+// JavaScript logic for form handling
+const form = document.querySelector(".feedback-form");
+const STORAGE_KEY = "feedback-form-state";
+
+// Initialize formData object
+let formData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+  email: "",
+  message: "",
 };
 
-const resetFormData = (data) => {
-  Object.keys(data).forEach((key) => {
-    data[key] = '';
-  });
-};
+// Prefill form with stored data
+document.addEventListener("DOMContentLoaded", () => {
+  const { email, message } = formData;
+  form.email.value = email || "";
+  form.message.value = message || "";
+});
 
-const getFormData = () => {
-  const data = JSON.parse(localStorage.getItem(FORM_FEEDBACK_KEY));
-  if (!data) return formData;
+// Save data to localStorage on input
+form.addEventListener("input", (e) => {
+  formData[e.target.name] = e.target.value;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+});
 
-  Object.keys(data).forEach((key) => {
-    formData[key] = data[key];
-  });
+// Handle form submission
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const { email, message } = formData;
 
-  return formData
-};
+  // Validate that all fields are filled
+  if (!email.trim() || !message.trim()) {
+    alert("Please fill in all fields");
+    return;
+  }
 
-const isFormDataIsValid = () => {
-  const data = getFormData();
-  return Object.values(data).every((value) => value);
-}
+  console.log("Form Submitted:", formData);
 
-const updateFormData = (feedbackForm) => {
-  const data = getFormData();
-  Object.keys(data).forEach((key) => {
-    feedbackForm[key].value = data[key];
-  })
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  const feedbackForm = document.querySelector('.feedback-form');
-
-  feedbackForm.addEventListener('input', event => {
-    formData[event.target.name] = event.target.value.trim();
-    localStorage.setItem(FORM_FEEDBACK_KEY, JSON.stringify(formData));
-  });
-
-  updateFormData(feedbackForm);
-
-  feedbackForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-
-    if (isFormDataIsValid()) {
-      console.log(formData);
-      localStorage.removeItem(FORM_FEEDBACK_KEY);
-      feedbackForm.reset();
-      resetFormData(formData);
-    } else {
-      alert('Fill please all fields');
-    }
-  });
+  // Clear storage and reset form
+  localStorage.removeItem(STORAGE_KEY);
+  formData = { email: "", message: "" };
+  form.reset();
 });
