@@ -1,6 +1,6 @@
 import "..\css\style.css";
 import SimpleLightbox from "simplelightbox";
-import "simplelightbox\dist\simple-lightbox.min.css";
+import "node_modules\simple-lightbox\dist\simpleLightbox.min.css";
 
 const images = [
   {
