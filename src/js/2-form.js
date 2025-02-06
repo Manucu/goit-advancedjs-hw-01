@@ -1,6 +1,6 @@
-import "../css/style.css";
-import javascriptLogo from "../img/javascript.svg";
-import viteLogo from "/vite.svg";
+import "..\css\style.css";
+import javascriptLogo from "..\img\javascript.svg";
+import viteLogo from "\vite.svg";
 
 document.querySelector("#app").innerHTML = `
   <div>
